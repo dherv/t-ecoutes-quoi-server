@@ -1,0 +1,9 @@
+-- CreateTable
+CREATE TABLE "Song" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "type" TEXT NOT NULL,
+    "duration" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+    "url" TEXT NOT NULL
+);

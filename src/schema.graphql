@@ -1,0 +1,37 @@
+type Query {
+  songs: [Song!]!
+}
+type Mutation {
+  addSong(url: String!): Song
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  login(email: String!, password: String!): AuthPayload
+  addLike(songId: ID!): Like
+}
+type Subscription {
+  newSong: Song
+  newLike: Like
+}
+type Song {
+  id: ID!
+  url: String!
+  type: String
+  duration: String
+  image: String
+  user: User!
+  likes: [Like]
+}
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  songs: [Song!]!
+}
+type AuthPayload {
+  token: String
+  user: User
+}
+type Like {
+  id: ID!
+  song: Song!
+  user: User!
+}
