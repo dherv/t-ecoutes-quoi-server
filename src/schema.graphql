@@ -1,5 +1,5 @@
 type Query {
-  songs: [Song!]!
+  songs(orderBy: SongOrderByInput): [Song!]!
   user: User!
 }
 type Mutation {
@@ -35,4 +35,14 @@ type Like {
   id: ID!
   song: Song!
   user: User!
+}
+
+input SongOrderByInput {
+  url: Sort
+  createdAt: Sort
+}
+
+enum Sort {
+  asc
+  desc
 }
