@@ -15,6 +15,8 @@ type Subscription {
 type Song {
   id: ID!
   url: String!
+  name: String!
+  artist: String!
   type: String
   duration: String
   image: String

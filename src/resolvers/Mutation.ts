@@ -1,17 +1,21 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const faker = require('faker');
 import { APP_SECRET } from '../utils';
 
 export const addSong = async (parent: any, args: any, context: any) => {
   const { userId } = context;
+
   const mock = {
+    url: faker.internet.url(),
+    name: faker.name.findName(),
+    artist: faker.name.findName(),
     type: "playlist",
-    image: "image",
+    image: faker.image.imageUrl(),
     duration: "02:00",
   };
   const newSong = await context.prisma.song.create({
     data: {
-      url: args.url,
       ...mock,
       user: { connect: { id: userId } },
     },
@@ -67,7 +71,12 @@ export const login = async (
   };
 };
 
-export const addLike = async (parent: any, args: any, context: any, info: any) => {
+export const addLike = async (
+  parent: any,
+  args: any,
+  context: any,
+  info: any
+) => {
   const { userId } = context;
 
   // 2
