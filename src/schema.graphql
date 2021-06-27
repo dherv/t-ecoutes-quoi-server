@@ -1,5 +1,6 @@
 type Query {
   songs: [Song!]!
+  user: User!
 }
 type Mutation {
   addSong(url: String!): Song
