@@ -33,7 +33,7 @@ export const signup = async (
 ) => {
   const password = await bcrypt.hash(args.password, 10);
   const user = await context.prisma.user.create({
-    data: { ...args, password },
+    data: { ...args, avatar: faker.image.imageUrl(), password },
   });
   const token = jwt.sign({ userId: user.id }, APP_SECRET);
   return {
@@ -120,7 +120,7 @@ export const addFriend = async (
     throw new Error("No such user found");
   }
 
-  if (friend.userId === userId) {
+  if (friend.id === userId) {
     throw new Error(
       "you can not be friend with yourself - it just does not make sense"
     );
@@ -139,7 +139,7 @@ export const addFriend = async (
     throw new Error(`Already friend with: ${friend.name}`);
   }
 
-  context.prisma.friend.create({
+  await context.prisma.friend.create({
     data: {
       friendA: { connect: { id: userId } },
       friendB: { connect: { id: friend.id } },
