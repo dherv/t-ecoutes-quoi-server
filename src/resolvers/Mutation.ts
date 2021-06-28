@@ -1,28 +1,58 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const faker = require("faker");
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+import faker from 'faker';
+import { google } from 'googleapis';
+import jwt from 'jsonwebtoken';
 import { APP_SECRET } from '../utils';
+
+dotenv.config()
 
 export const addSong = async (parent: any, args: any, context: any) => {
   const { userId } = context;
 
-  const mock = {
-    url: faker.internet.url(),
-    name: faker.name.findName(),
-    artist: faker.name.findName(),
-    type: "playlist",
-    image: faker.image.imageUrl(),
-    duration: "02:00",
-  };
-  const newSong = await context.prisma.song.create({
-    data: {
-      ...mock,
-      user: { connect: { id: userId } },
-    },
+  var youtube = google.youtube({
+    version: "v3",
+    auth: process.env.GOOGLE_AUTH_KEY,
   });
 
-  context.pubsub.publish("NEW_SONG", newSong);
-  return newSong;
+  youtube.search.list(
+    {
+      part: ["snippet"],
+      q: args.url
+    },
+    async function (err: any, data: any) {
+      if (err) {
+        console.error("Error: " + err);
+      }
+      if (data) {
+        console.log(data.data.items[0].snippet);
+        const songData = data.data.items[0]
+        const song = {
+          url: args.url,
+          name: songData.snippet.title,
+          artist: "",
+          type: "playlist",
+          image: songData.snippet.thumbnails.default.url,
+          duration: "02:00",
+        };
+
+        const newSong = await context.prisma.song.create({
+          data: {
+            ...song,
+            user: { connect: { id: userId } },
+          },
+        });
+      
+        context.pubsub.publish("NEW_SONG", newSong);
+        return newSong;
+      }
+    }
+  );
+ 
+
+
+
+
 };
 
 export const signup = async (
