@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const faker = require('faker');
+const faker = require("faker");
 import { APP_SECRET } from '../utils';
 
 export const addSong = async (parent: any, args: any, context: any) => {
@@ -79,7 +79,6 @@ export const addLike = async (
 ) => {
   const { userId } = context;
 
-  // 2
   const like = await context.prisma.like.findUnique({
     where: {
       songId_userId: {
@@ -93,7 +92,6 @@ export const addLike = async (
     throw new Error(`Already liked this song: ${args.songId}`);
   }
 
-  // 3
   const newLike = context.prisma.like.create({
     data: {
       user: { connect: { id: userId } },
@@ -103,4 +101,43 @@ export const addLike = async (
   context.pubsub.publish("NEW_LIKE", newLike);
 
   return newLike;
+};
+
+export const addFriend = async (
+  parent: any,
+  args: any,
+  context: any,
+  info: any
+) => {
+  const { userId } = context;
+  const friendEmail = args.email;
+
+  const friend = await context.prisma.user.findUnique({
+    where: { email: friendEmail },
+  });
+  if (!friend) {
+    throw new Error("No such user found");
+  }
+
+  const friendShip = await context.prisma.friend.findUnique({
+    where: {
+      friendAId_friendBId: {
+        friendAId: userId,
+        friendBId: friend.id,
+      },
+    },
+  });
+
+  if (Boolean(friendShip)) {
+    throw new Error(`Already friend with: ${friend.name}`);
+  }
+
+  context.prisma.friend.create({
+    data: {
+      friendA: { connect: { id: userId } },
+      friendB: { connect: { id: friend.id } },
+    },
+  });
+
+  return friend;
 };

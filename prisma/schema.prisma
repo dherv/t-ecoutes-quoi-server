@@ -22,12 +22,14 @@ model Song {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   name     String
-  email    String @unique
+  email    String   @unique
   password String
   songs    Song[]
   likes    Like[]
+  friendA  Friend[] @relation("friendA")
+  friendB  Friend[] @relation("friendB")
 }
 
 model Like {
@@ -38,4 +40,14 @@ model Like {
   songId Int
 
   @@unique([songId, userId])
+}
+
+model Friend {
+  id        Int  @id @default(autoincrement())
+  friendA   User @relation(name: "friendA", fields: [friendAId], references: [id])
+  friendAId Int
+  friendB   User @relation(name: "friendB", fields: [friendBId], references: [id])
+  friendBId Int
+
+  @@unique([friendAId, friendBId])
 }
