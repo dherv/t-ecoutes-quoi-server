@@ -2,6 +2,7 @@ type Query {
   songs(orderBy: SongOrderByInput): [Song!]!
   user: User!
 }
+
 type Mutation {
   addSong(url: String!): Song
   signup(email: String!, password: String!, name: String!): AuthPayload
@@ -9,10 +10,12 @@ type Mutation {
   addLike(songId: ID!): Like
   addFriend(email: String!): User
 }
+
 type Subscription {
   newSong: Song
   newLike: Like
 }
+
 type Song {
   id: ID!
   url: String!
@@ -24,16 +27,20 @@ type Song {
   user: User!
   likes: [Like]
 }
+
 type User {
   id: ID!
   name: String!
   email: String!
   songs: [Song!]!
+  friends: [User!]
 }
+
 type AuthPayload {
   token: String
   user: User
 }
+
 type Like {
   id: ID!
   song: Song!

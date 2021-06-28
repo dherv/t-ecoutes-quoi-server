@@ -115,8 +115,15 @@ export const addFriend = async (
   const friend = await context.prisma.user.findUnique({
     where: { email: friendEmail },
   });
+
   if (!friend) {
     throw new Error("No such user found");
+  }
+
+  if (friend.userId === userId) {
+    throw new Error(
+      "you can not be friend with yourself - it just does not make sense"
+    );
   }
 
   const friendShip = await context.prisma.friend.findUnique({
