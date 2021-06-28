@@ -23,7 +23,6 @@ export const friends = async (
 
   return [...friendA, ...friendB].map(
     (friendShip: { [key in "friendA" | "friendB"]: IUser }): IUser => {
-      console.log(friendShip);
       // remove the field key which will be either "friendB",
       return Object.values(friendShip)[0];
     }
