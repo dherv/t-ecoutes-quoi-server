@@ -1,5 +1,6 @@
 import 'graphql-import-node';
-import { ApolloServer, PubSub } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
+import { PubSub } from 'graphql-subscriptions';
 import { PrismaClient } from '@prisma/client';
 import * as Like from './resolvers/Like';
 import * as Mutation from './resolvers/Mutation';
